@@ -121,13 +121,25 @@
 
 (use-package lsp-ui)
 
-(use-package vterm)
+(use-package vterm
+  :config
+  (defun drgmr/project-vterm (&rest args)
+    "Opens a terminal on the project root, if any."
+    (interactive)
+    (let ((project-root (projectile-project-root)))
+      (setenv "PROOT" (projectile-project-root))
+      (vterm)
+      (vterm-send-string (concat "cd " project-root))
+      (vterm-send-return)
+      (vterm-clear)))
+  :bind
+  (("C-x t" . drgmr/project-vterm)))
 
 (use-package magit
   :bind
   (("C-x g" . magit-status)))
 
-;; -- Languages
+;; Languages
 
 (use-package elixir-mode
   :hook
