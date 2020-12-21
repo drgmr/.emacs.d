@@ -145,7 +145,10 @@
   :hook
   (elixir-mode-hook . lsp))
 
-(use-package exunit)
+(use-package exunit
+  :bind
+  (("C-c t a" . exunit-verify-all)
+   ("C-c t t" . exunit-verify)))
 
 (use-package erlang)
 
