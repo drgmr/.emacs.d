@@ -123,17 +123,33 @@
 
 (use-package vterm
   :config
-  (defun drgmr/project-vterm (&rest args)
-    "Opens a terminal on the project root, if any."
-    (interactive)
-    (let ((project-root (projectile-project-root)))
-      (setenv "PROOT" (projectile-project-root))
-      (vterm)
-      (vterm-send-string (concat "cd " project-root))
-      (vterm-send-return)
-      (vterm-clear)))
+  (progn
+    (defun drgmr/vterm-name (project)
+      (concat "<vterm @ " project ">"))
+
+    (defun drgmr/switch-to-project-vterm (&rest args)
+      "Switches to a terminal on the project root, creating one if needed."
+      (interactive)
+      (let ((possible-buffer-name (drgmr/vterm-name (projectile-project-name))))
+	(cond
+	 ((get-buffer possible-buffer-name)
+	  (switch-to-buffer possible-buffer-name))
+	 (t
+	  (drgmr/new-project-vterm)))))
+
+    (defun drgmr/new-project-vterm (&rest args)
+      "Creates a new term on the project's root."
+      (interactive)
+      (let* ((project-root (projectile-project-root))
+	     (project-name (projectile-project-name)))
+	(setenv "PROOT" project-root)
+	(vterm (generate-new-buffer-name (drgmr/vterm-name project-name)))
+	(vterm-send-string (concat "cd " project-root))
+	(vterm-send-return)
+	(vterm-clear))))
   :bind
-  (("C-x t" . drgmr/project-vterm)))
+  (("C-x t t" . drgmr/switch-to-project-vterm)
+   ("C-x t n" . drgmr/new-project-vterm)))
 
 (use-package magit
   :bind
@@ -153,6 +169,10 @@
 (use-package erlang)
 
 (use-package yaml-mode)
+
+(use-package rust-mode
+  :hook
+  (rust-mode-hook . lsp))
 
 ;; Other utilities
 
