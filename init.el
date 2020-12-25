@@ -178,5 +178,10 @@
   :hook
   (rust-mode-hook . lsp))
 
+(use-package gleam-mode
+  :straight (:host github :repo "gleam-lang/gleam-mode"))
+
+(use-package lfe-mode)
+
 ;; Other utilities
 
