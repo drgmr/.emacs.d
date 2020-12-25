@@ -155,6 +155,10 @@
   :bind
   (("C-x g" . magit-status)))
 
+(use-package ctrlf
+  :init
+  (ctrlf-mode))
+
 ;; Languages
 
 (use-package elixir-mode
