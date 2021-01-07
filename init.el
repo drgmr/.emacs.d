@@ -177,7 +177,9 @@
   (("C-c t a" . exunit-verify-all)
    ("C-c t t" . exunit-verify)))
 
-(use-package erlang)
+(use-package erlang
+  :hook
+  (erlang-mode-hook . lsp))
 
 (use-package yaml-mode)
 
