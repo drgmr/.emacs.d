@@ -92,7 +92,7 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-nord-light))
+  (load-theme 'doom-dark+))
 
 ;; Programming utilities
 
