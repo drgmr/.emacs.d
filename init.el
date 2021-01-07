@@ -192,5 +192,9 @@
 
 (use-package lfe-mode)
 
+(use-package clojure-mode)
+
+(use-package cider)
+
 ;; Other utilities
 
