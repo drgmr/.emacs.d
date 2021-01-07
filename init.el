@@ -14,7 +14,8 @@
   (load straight-bootstrap-file nil 'nomessage))
 
 (setq straight-use-package-by-default t)
-(setq use-package-hook-name-suffix nil)
+(setq use-package-hook-name-suffix nil
+      use-package-enable-imenu-support t)
 (straight-use-package 'use-package)
 
 ;; PACKAGES
