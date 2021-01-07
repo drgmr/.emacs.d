@@ -198,3 +198,8 @@
 
 ;; Other utilities
 
+(use-package ledger-mode
+  :config
+  (setq ledger-flymake-be-explicit t
+	ledger-flymake-be-pedantic t
+	ledger-report-use-strict t))
