@@ -160,6 +160,12 @@
   :init
   (ctrlf-mode))
 
+(use-package imenu-list
+  :config
+  (setq imenu-list-focus-after-activation t)
+  :bind
+  (("C-'" . imenu-list-smart-toggle)))
+
 ;; Languages
 
 (use-package elixir-mode
