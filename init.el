@@ -110,7 +110,8 @@
   (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
   
   :config
-  (setq lsp-clients-elixir-server-executable "elixir-ls")
+  (setq lsp-clients-elixir-server-executable "elixir-ls"
+	lsp-file-watch-threshold nil)
 
   :bind
   (("M-?" . lsp-find-references))
