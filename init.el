@@ -63,6 +63,11 @@
    ("s-<up>" . windmove-up)
    ("s-<down>" . windmove-down)))
 
+(use-package marginalia
+  :init
+  (marginalia-mode)
+  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
+
 (use-package which-key
   :diminish
   :hook
