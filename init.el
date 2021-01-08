@@ -51,7 +51,10 @@
 	custom-file (no-littering-expand-etc-file-name "custom.el"))
   
   :hook
-  (prog-mode-hook . subword-mode))
+  (prog-mode-hook . subword-mode)
+
+  :bind
+  (("C-?" . undo-redo)))
 
 (use-package windmove
   :bind
