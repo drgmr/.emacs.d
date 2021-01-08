@@ -207,3 +207,15 @@
   (setq ledger-flymake-be-explicit t
 	ledger-flymake-be-pedantic t
 	ledger-report-use-strict t))
+
+(use-package markdown-mode
+  :commands
+  (markdown-mode gfm-mode)
+
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
+
+  :init
+  (setq markdown-command "multimarkdown"))
