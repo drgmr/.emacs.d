@@ -79,10 +79,12 @@
   (("C-'" . avy-goto-char-2)))
 
 (use-package projectile
-  :bind
-  (("s-p" . projectile-command-map))
   :config
-  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal")))
+  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal" "~/Projects/experiments")
+	projectile-switch-project-action 'magit-status)
+
+  :bind
+  (("s-p" . projectile-command-map)))
 
 (use-package docker
   :bind
@@ -163,6 +165,9 @@
    ("C-x t n" . drgmr/new-project-vterm)))
 
 (use-package magit
+  :config
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+
   :bind
   (("C-x g" . magit-status)))
 
