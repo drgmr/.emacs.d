@@ -80,7 +80,7 @@
 
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal" "~/Projects/experiments")
+  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal")
 	projectile-switch-project-action 'magit-status)
 
   :bind
