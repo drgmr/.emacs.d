@@ -38,9 +38,9 @@
     (tool-bar-mode -1)
     (fringe-mode 0)
     (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "Inconsolata" :height 200)
+    (set-face-attribute 'default nil :font "Inconsolata" :height 250)
     (fset 'yes-or-no-p 'y-or-n-p))
-  
+
   :config
   (setq visible-bell t
 	inhibit-startup-message t
