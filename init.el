@@ -76,7 +76,7 @@
 
 (use-package avy
   :bind
-  (("C-'" . avy-goto-char-2)))
+  (("C-\"" . avy-goto-char-2)))
 
 (use-package projectile
   :config
