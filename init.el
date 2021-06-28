@@ -115,24 +115,8 @@
   :diminish
   :hook (company-mode-hook . company-box-mode))
 
-(use-package lsp-mode
-  :commands lsp
-  :init
-  (add-to-list 'exec-path (expand-file-name "~/.local/bin"))
-  
-  :config
-  (setq lsp-clients-elixir-server-executable "elixir-ls"
-	lsp-file-watch-threshold nil)
-
-  :bind
-  (("M-?" . lsp-find-references))
-  
-  :hook
-  (lsp-mode-hook . lsp-headerline-breadcrumb-mode)
-  (lsp-mode-hook . lsp-ui-mode)
-  (lsp-mode-hook . yas-minor-mode))
-
-(use-package lsp-ui)
+(use-package eglot
+  :commands eglot)
 
 (use-package vterm
   :config
@@ -183,24 +167,18 @@
 
 ;; Languages
 
-(use-package elixir-mode
-  :hook
-  (elixir-mode-hook . lsp))
+(use-package elixir-mode)
 
 (use-package exunit
   :bind
   (("C-c t a" . exunit-verify-all)
    ("C-c t t" . exunit-verify)))
 
-(use-package erlang
-  :hook
-  (erlang-mode-hook . lsp))
+(use-package erlang)
 
 (use-package yaml-mode)
 
-(use-package rust-mode
-  :hook
-  (rust-mode-hook . lsp))
+(use-package rust-mode)
 
 (use-package gleam-mode
   :straight (:host github :repo "gleam-lang/gleam-mode"))
