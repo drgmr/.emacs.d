@@ -112,6 +112,10 @@
 
 (use-package doom-themes)
 
+(use-package doom-modeline
+  :hook
+  (after-init-hook . doom-modeline-mode))
+
 ;; Programming utilities
 
 (use-package company
