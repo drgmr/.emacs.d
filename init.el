@@ -221,3 +221,9 @@
 
   :init
   (setq markdown-command "multimarkdown"))
+
+(use-package org-mode)
+
+(use-package org-roam
+  :config
+  (setq org-roam-db-location "~/Projects/roam/"))
