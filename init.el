@@ -42,17 +42,26 @@
     (fset 'yes-or-no-p 'y-or-n-p))
 
   :config
-  (setq visible-bell t
-	inhibit-startup-message t
-	auto-save-default nil
-	make-backup-files nil
-	frame-resize-pixelwise t
-	browse-url-browser-function 'xwidget-webkit-browse-url
-	custom-file (no-littering-expand-etc-file-name "custom.el")
-	scheme-program-name "csi -:c")
+  (progn
+    (defun drgmr/apply-theme (appearance)
+      "Load theme, taking current system APPEARANCE into consideration."
+      (mapc #'disable-theme custom-enabled-themes)
+      (pcase appearance
+	('light (load-theme 'modus-operandi t))
+	('dark (load-theme 'modus-vivendi t))))
+
+    (setq visible-bell t
+	  inhibit-startup-message t
+	  auto-save-default nil
+	  make-backup-files nil
+	  frame-resize-pixelwise t
+	  browse-url-browser-function 'xwidget-webkit-browse-url
+	  custom-file (no-littering-expand-etc-file-name "custom.el")
+	  scheme-program-name "csi -:c"))
   
   :hook
   (prog-mode-hook . subword-mode)
+  (ns-system-appearance-change-functions . drgmr/apply-theme)
 
   :bind
   (("C-?" . undo-redo)))
@@ -101,9 +110,7 @@
 
 ;; Visuals
 
-(use-package doom-themes
-  :config
-  (load-theme 'doom-dark+))
+(use-package doom-themes)
 
 ;; Programming utilities
 
