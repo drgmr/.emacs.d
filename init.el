@@ -189,6 +189,8 @@
 
 (use-package cider)
 
+(use-package zig-mode)
+
 ;; Other utilities
 
 (use-package ledger-mode
