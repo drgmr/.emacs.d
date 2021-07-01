@@ -113,6 +113,11 @@
 (use-package doom-themes)
 
 (use-package doom-modeline
+  :config
+  (progn
+    (setq doom-modeline-height 1)
+    (set-face-attribute 'mode-line nil :height 180)
+    (set-face-attribute 'mode-line-inactive nil :height 180))
   :hook
   (after-init-hook . doom-modeline-mode))
 
