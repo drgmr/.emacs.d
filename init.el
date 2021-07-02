@@ -188,9 +188,8 @@
 (use-package elixir-mode)
 
 (use-package exunit
-  :bind
-  (("C-c t a" . exunit-verify-all)
-   ("C-c t t" . exunit-verify)))
+  :hook
+  (elixir-mode-hook . exunit-mode))
 
 (use-package erlang)
 
