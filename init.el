@@ -228,7 +228,13 @@
   :init
   (setq markdown-command "multimarkdown"))
 
-(use-package org-mode)
+(use-package org-mode
+  :config
+  (setq org-catch-invisible-edits 'error
+	org-agenda-files '("~/Projects/roam")
+	org-pretty-entities t
+	org-pretty-entities-include-sub-superscripts t
+	org-use-sub-superscripts t))
 
 (use-package org-roam
   :config
