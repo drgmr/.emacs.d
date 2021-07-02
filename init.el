@@ -80,6 +80,8 @@
 
 (use-package which-key
   :diminish
+  :config
+  (setq which-key-popup-type 'minibuffer)
   :hook
   (after-init-hook . which-key-mode))
 
