@@ -239,3 +239,5 @@
 (use-package org-roam
   :config
   (setq org-roam-db-location "~/Projects/roam/"))
+
+(use-package ripgrep)
