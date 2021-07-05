@@ -228,7 +228,7 @@
   :init
   (setq markdown-command "multimarkdown"))
 
-(use-package org-mode
+(use-package org
   :config
   (setq org-catch-invisible-edits 'error
 	org-agenda-files '("~/Projects/roam")
