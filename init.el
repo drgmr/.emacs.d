@@ -39,7 +39,8 @@
     (fringe-mode 0)
     (menu-bar-mode -1)
     (set-face-attribute 'default nil :font "Inconsolata" :height 250)
-    (fset 'yes-or-no-p 'y-or-n-p))
+    (fset 'yes-or-no-p 'y-or-n-p)
+    (put 'downcase-region 'disabled nil))
 
   :config
   (progn
