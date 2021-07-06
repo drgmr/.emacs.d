@@ -235,7 +235,9 @@
 	org-agenda-files '("~/Projects/roam")
 	org-pretty-entities t
 	org-pretty-entities-include-sub-superscripts t
-	org-use-sub-superscripts t))
+	org-use-sub-superscripts t)
+  :hook
+  (org-mode-hook . org-indent-mode))
 
 (use-package org-roam
   :config
