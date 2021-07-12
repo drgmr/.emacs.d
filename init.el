@@ -59,9 +59,10 @@
 	  browse-url-browser-function 'xwidget-webkit-browse-url
 	  custom-file (no-littering-expand-etc-file-name "custom.el")
 	  scheme-program-name "csi -:c"))
-  
+
   :hook
   (prog-mode-hook . subword-mode)
+  (prog-mode-hook . whitespace-mode)
   (ns-system-appearance-change-functions . drgmr/apply-theme)
 
   :bind
