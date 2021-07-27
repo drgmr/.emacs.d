@@ -114,6 +114,12 @@
   :config
   (prescient-persist-mode +1))
 
+(use-package hungry-delete
+  :config
+  (setq hungry-delete-join-reluctantly t)
+  :hook
+  (prog-mode-hook . hungry-delete-mode))
+
 ;; Visuals
 
 (use-package doom-themes)
