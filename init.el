@@ -249,8 +249,17 @@
   (org-mode-hook . org-indent-mode))
 
 (use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Projects/roam/")
   :config
-  (setq org-roam-db-location "~/Projects/roam/"
-	org-roam-v2-ack t))
+  (org-roam-setup)
+  :bind
+  (("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert)
+   ("C-c n t" . org-roam-dailies-goto-today)
+   ("C-c n y" . org-roam-dailies-goto-yesterday)))
 
 (use-package ripgrep)
