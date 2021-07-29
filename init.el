@@ -250,6 +250,7 @@
 
 (use-package org-roam
   :config
-  (setq org-roam-db-location "~/Projects/roam/"))
+  (setq org-roam-db-location "~/Projects/roam/"
+	org-roam-v2-ack t))
 
 (use-package ripgrep)
