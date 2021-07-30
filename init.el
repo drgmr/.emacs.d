@@ -38,7 +38,8 @@
     (tool-bar-mode -1)
     (fringe-mode 0)
     (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "Inconsolata" :height 250)
+    (set-face-attribute 'default nil :font "CozetteVector" :height 250)
+    (set-face-attribute 'fixed-pitch nil :font "CozetteVector")
     (fset 'yes-or-no-p 'y-or-n-p)
     (put 'downcase-region 'disabled nil))
 
@@ -123,15 +124,6 @@
 ;; Visuals
 
 (use-package doom-themes)
-
-(use-package doom-modeline
-  :config
-  (progn
-    (setq doom-modeline-height 1)
-    (set-face-attribute 'mode-line nil :height 180)
-    (set-face-attribute 'mode-line-inactive nil :height 180))
-  :hook
-  (after-init-hook . doom-modeline-mode))
 
 ;; Programming utilities
 
