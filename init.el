@@ -261,4 +261,8 @@
 
 (use-package ripgrep)
 
+(use-package org-tree-slide
+  :custom
+  (org-image-actual-width nil))
+
 (use-package geiser-chicken)
