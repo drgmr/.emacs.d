@@ -38,8 +38,8 @@
     (tool-bar-mode -1)
     (fringe-mode 0)
     (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "CozetteVector" :height 250)
-    (set-face-attribute 'fixed-pitch nil :font "CozetteVector")
+    (set-face-attribute 'default nil :font "JetBrains Mono" :height 200)
+    (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono")
     (fset 'yes-or-no-p 'y-or-n-p)
     (put 'downcase-region 'disabled nil))
 
