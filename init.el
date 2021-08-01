@@ -247,9 +247,14 @@
 
 (use-package org-roam
   :init
-  (setq org-roam-v2-ack t)
+  (setq org-roam-v2-ack t
+	org-roam-capture-templates '())
   :custom
   (org-roam-directory "~/Projects/roam/")
+  (org-roam-capture-templates
+   '(("d" "default" plain "%?" :if-new
+      (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+      :unnarrowed t)))
   :config
   (org-roam-setup)
   :bind
