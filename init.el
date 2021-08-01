@@ -237,6 +237,11 @@
 	org-pretty-entities t
 	org-pretty-entities-include-sub-superscripts t
 	org-use-sub-superscripts t)
+  :init
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((scheme . t)
+     (emacs-lisp . t))
   :hook
   (org-mode-hook . org-indent-mode))
 
@@ -255,3 +260,5 @@
    ("C-c n y" . org-roam-dailies-goto-yesterday)))
 
 (use-package ripgrep)
+
+(use-package geiser-chicken)
