@@ -232,16 +232,16 @@
 
 (use-package org
   :config
-  (setq org-catch-invisible-edits 'error
-	org-agenda-files '("~/Projects/roam")
-	org-pretty-entities t
-	org-pretty-entities-include-sub-superscripts t
-	org-use-sub-superscripts t)
-  :init
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((scheme . t)
-     (emacs-lisp . t))
+  (progn
+    (setq org-catch-invisible-edits 'error
+	  org-agenda-files '("~/Projects/roam")
+	  org-pretty-entities t
+	  org-pretty-entities-include-sub-superscripts t
+	  org-use-sub-superscripts t)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     (append org-babel-load-languages
+	     '((scheme . t)))))
   :hook
   (org-mode-hook . org-indent-mode))
 
