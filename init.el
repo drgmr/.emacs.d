@@ -38,10 +38,11 @@
     (tool-bar-mode -1)
     (fringe-mode 0)
     (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "JetBrains Mono" :height 200)
-    (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono")
+    (set-face-attribute 'default nil :font "SF Mono" :height 200)
+    (set-face-attribute 'fixed-pitch nil :font "SF Mono")
     (fset 'yes-or-no-p 'y-or-n-p)
-    (put 'downcase-region 'disabled nil))
+    (put 'downcase-region 'disabled nil)
+    (global-visual-line-mode))
 
   :config
   (progn
@@ -51,8 +52,12 @@
       (pcase appearance
 	('light (load-theme 'modus-operandi t))
 	('dark (load-theme 'modus-vivendi t))))
+    (defun drgmr/add-list-to-list (dst src)
+      "Similar to `add-to-list', but accepts a list as 2nd argument"
+      (set dst (append (eval dst) src)))
 
-    (setq visible-bell t
+    (setq load-prefer-newer t
+          visible-bell t
 	  inhibit-startup-message t
 	  auto-save-default nil
 	  make-backup-files nil
@@ -60,7 +65,9 @@
 	  browse-url-browser-function 'xwidget-webkit-browse-url
 	  custom-file (no-littering-expand-etc-file-name "custom.el")
 	  scheme-program-name "csi -:c"
-	  whitespace-style '(face trailing)))
+	  whitespace-style '(face trailing)
+          css-indent-offset 2)
+    (setq-default indent-tabs-mode nil))
 
   :hook
   (prog-mode-hook . subword-mode)
@@ -77,6 +84,48 @@
    ("s-<right>" . windmove-right)
    ("s-<up>" . windmove-up)
    ("s-<down>" . windmove-down)))
+
+(use-package org
+  :config
+  (progn
+    (setq org-catch-invisible-edits 'error
+	  org-agenda-files '("~/Projects/roam")
+	  org-pretty-entities t
+	  org-pretty-entities-include-sub-superscripts t
+	  org-use-sub-superscripts t
+          org-return-follows-link t
+          org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     (append org-babel-load-languages
+	     '((scheme . t)
+	       (dot . t)))))
+  :hook
+  (org-mode-hook . org-indent-mode))
+
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Projects/roam/")
+  (org-roam-complete-everywhere t)
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+     ("b" "book notes" plain
+      "\n\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+      :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)))
+  :config
+  (org-roam-setup)
+  :bind
+  (("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert)
+   ("C-c n t" . org-roam-dailies-goto-today)
+   ("C-c n y" . org-roam-dailies-goto-yesterday)))
 
 (use-package marginalia
   :init
@@ -96,7 +145,7 @@
 
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal")
+  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal" "~/quicklisp/local-projects")
 	projectile-switch-project-action 'magit-status)
 
   :bind
@@ -136,7 +185,11 @@
   :hook (company-mode-hook . company-box-mode))
 
 (use-package eglot
-  :commands eglot)
+  :commands eglot
+  :config
+  (drgmr/add-list-to-list 'eglot-server-programs
+                          '((elixir-mode "elixir-ls")
+                            (erlang-mode "erlang_ls"))))
 
 (use-package vterm
   :config
@@ -187,11 +240,17 @@
 
 ;; Languages
 
-(use-package elixir-mode)
+(use-package elixir-mode
+  :hook
+  (elixir-mode-hook . eglot-ensure))
 
 (use-package exunit
   :hook
   (elixir-mode-hook . exunit-mode))
+
+(use-package flycheck-credo
+  :hook
+  (elixir-mode-hook . flycheck-mode))
 
 (use-package erlang)
 
@@ -207,6 +266,15 @@
 (use-package clojure-mode)
 
 (use-package cider)
+
+(use-package slime
+  :config
+  (setq inferior-lisp-program "sbcl"))
+
+(use-package paredit
+  :hook
+  (common-lisp-mode-hook . paredit-mode)
+  (clojure-mode-hook . paredit-mode))
 
 (use-package zig-mode)
 
@@ -230,40 +298,6 @@
   :init
   (setq markdown-command "multimarkdown"))
 
-(use-package org
-  :config
-  (progn
-    (setq org-catch-invisible-edits 'error
-	  org-agenda-files '("~/Projects/roam")
-	  org-pretty-entities t
-	  org-pretty-entities-include-sub-superscripts t
-	  org-use-sub-superscripts t)
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     (append org-babel-load-languages
-	     '((scheme . t)))))
-  :hook
-  (org-mode-hook . org-indent-mode))
-
-(use-package org-roam
-  :init
-  (setq org-roam-v2-ack t
-	org-roam-capture-templates '())
-  :custom
-  (org-roam-directory "~/Projects/roam/")
-  (org-roam-capture-templates
-   '(("d" "default" plain "%?" :if-new
-      (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
-      :unnarrowed t)))
-  :config
-  (org-roam-setup)
-  :bind
-  (("C-c n l" . org-roam-buffer-toggle)
-   ("C-c n f" . org-roam-node-find)
-   ("C-c n i" . org-roam-node-insert)
-   ("C-c n t" . org-roam-dailies-goto-today)
-   ("C-c n y" . org-roam-dailies-goto-yesterday)))
-
 (use-package ripgrep)
 
 (use-package org-tree-slide
@@ -283,3 +317,22 @@
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
+
+(use-package org-contrib)
+
+(use-package ghub
+  :config
+  (setq auth-sources '("~/.authinfo")))
+
+(use-package forge
+  :after magit)
+
+(use-package protobuf-mode)
+
+(use-package yasnippet
+  :hook
+  (prog-mode-hook . yas-minor-mode))
+
+(use-package yasnippet-snippets)
+
+(use-package persp-mode)
