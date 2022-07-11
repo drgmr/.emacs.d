@@ -38,8 +38,8 @@
     (tool-bar-mode -1)
     (fringe-mode 0)
     (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "SF Mono" :height 200)
-    (set-face-attribute 'fixed-pitch nil :font "SF Mono")
+    (set-face-attribute 'default nil :font "Berkeley Mono" :height 215)
+    (set-face-attribute 'fixed-pitch nil :font "Berkeley Mono")
     (fset 'yes-or-no-p 'y-or-n-p)
     (put 'downcase-region 'disabled nil)
     (global-visual-line-mode))
@@ -50,8 +50,8 @@
       "Load theme, taking current system APPEARANCE into consideration."
       (mapc #'disable-theme custom-enabled-themes)
       (pcase appearance
-	('light (load-theme 'modus-operandi t))
-	('dark (load-theme 'modus-vivendi t))))
+	('light (load-theme 'kaolin-light t))
+	('dark (load-theme 'kaolin-aurora t))))
     (defun drgmr/add-list-to-list (dst src)
       "Similar to `add-to-list', but accepts a list as 2nd argument"
       (set dst (append (eval dst) src)))
@@ -145,7 +145,7 @@
 
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/Projects/perimeter" "~/Projects/personal" "~/quicklisp/local-projects")
+  (setq projectile-project-search-path '("~/Projects" "~/quicklisp/local-projects")
 	projectile-switch-project-action 'magit-status)
 
   :bind
@@ -187,9 +187,12 @@
 (use-package eglot
   :commands eglot
   :config
-  (drgmr/add-list-to-list 'eglot-server-programs
-                          '((elixir-mode "elixir-ls")
-                            (erlang-mode "erlang_ls"))))
+  (progn
+    (add-to-list 'eglot-server-programs '(elixir-mode "elixir-ls"))
+    (add-to-list 'eglot-server-programs '(erlang-mode "erlang_ls"))
+    (add-to-list 'eglot-server-programs '((swift-mode :language-id "swift") "xcrun" "sourcekit-lsp")))
+  :bind
+  (("s-=" . eglot-format)))
 
 (use-package vterm
   :config
@@ -258,8 +261,10 @@
 
 (use-package rust-mode)
 
-(use-package gleam-mode
-  :straight (:host github :repo "gleam-lang/gleam-mode"))
+;; (use-package gleam-mode
+;;   :straight (:host github :repo "gleam-lang/gleam-mode"))
+
+(use-package tree-sitter-indent)
 
 (use-package lfe-mode)
 
@@ -267,16 +272,24 @@
 
 (use-package cider)
 
-(use-package slime
+;; (use-package slime
+;;   :config
+;;   (setq inferior-lisp-program "sbcl"))
+
+(use-package sly
   :config
-  (setq inferior-lisp-program "sbcl"))
+  (setq inferior-lisp-program "sbcl")
+  :hook
+  (lisp-mode-hook . paredit-mode))
 
 (use-package paredit
   :hook
   (common-lisp-mode-hook . paredit-mode)
   (clojure-mode-hook . paredit-mode))
 
-(use-package zig-mode)
+(use-package zig-mode
+  :hook
+  (zig-mode-hook . eglot-ensure))
 
 ;; Other utilities
 
@@ -311,7 +324,7 @@
   (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
   :after org-roam
   :hook
-  (after-init . org-roam-ui-mode)
+  (after-init-hook . org-roam-ui-mode)
   :config
   (setq org-roam-ui-sync-theme t
         org-roam-ui-follow t
@@ -336,3 +349,30 @@
 (use-package yasnippet-snippets)
 
 (use-package persp-mode)
+
+(use-package swift-mode
+  :hook
+  (swift-mode-hook . eglot-ensure))
+
+(use-package kaolin-themes)
+
+;; ((evil telephone-line-evil-tag-segment)
+;;  (accent telephone-line-vc-segment telephone-line-erc-modified-channels-segment telephone-line-process-segment)
+;;  (nil telephone-line-projectile-segment telephone-line-buffer-segment))
+
+;; ((nil telephone-line-flycheck-segment telephone-line-misc-info-segment)
+;;  (accent telephone-line-major-mode-segment)
+;;  (evil telephone-line-airline-position-segment))
+
+(use-package telephone-line
+  :hook
+  (after-init-hook . telephone-line-mode)
+  :config
+  (progn
+    (setq telephone-line-lhs
+          '((evil . (telephone-line-major-mode-segment))
+            (accent . (telephone-line-vc-segment))
+            (nil . (telephone-line-projectile-buffer-segment)))
+          telephone-line-rhs
+          '((nil . (telephone-line-misc-info-segment))
+            (accent . (telephone-line-airline-position-segment))))))
