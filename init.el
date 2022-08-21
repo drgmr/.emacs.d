@@ -96,6 +96,7 @@
 	  org-use-sub-superscripts t
           org-return-follows-link t
           org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    (add-to-list 'org-link-frame-setup '(file . find-file))
     (org-babel-do-load-languages
      'org-babel-load-languages
      (append org-babel-load-languages
@@ -157,7 +158,12 @@
 
 (use-package docker
   :bind
-  (("s-d" . docker)))
+
+(use-package kubernetes
+  :commands (kubernetes-overview)
+  :config
+  (setq kubernetes-poll-frequency 3600
+        kubernetes-redraw-frequency 3600))
 
 (use-package selectrum
   :hook
