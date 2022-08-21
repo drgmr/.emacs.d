@@ -15,13 +15,14 @@
 
 (setq straight-use-package-by-default t)
 (setq use-package-hook-name-suffix nil
-      use-package-enable-imenu-support t)
+      use-package-enable-imenu-support t
+      use-package-always-demand t)
 (straight-use-package 'use-package)
 
 ;; PACKAGES
 
 ;; Core
-(use-package diminish)
+(use-package no-littering)
 
 (use-package exec-path-from-shell
   :config
@@ -29,20 +30,16 @@
   (setq exec-path-from-shell-variables '("PATH"))
   (exec-path-from-shell-initialize))
 
-(use-package no-littering)
+(use-package kaolin-themes)
 
 (use-package emacs
   :init
   (progn
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (fringe-mode 0)
-    (menu-bar-mode -1)
-    (set-face-attribute 'default nil :font "Berkeley Mono" :height 215)
-    (set-face-attribute 'fixed-pitch nil :font "Berkeley Mono")
-    (fset 'yes-or-no-p 'y-or-n-p)
     (put 'downcase-region 'disabled nil)
-    (global-visual-line-mode))
+    (put 'magit-clean 'disabled nil)
+    (global-visual-line-mode)
+    (set-face-attribute 'default nil :font "Berkeley Mono" :height 215)
+    (set-face-attribute 'fixed-pitch nil :font "Berkeley Mono"))
 
   :config
   (progn
@@ -66,7 +63,9 @@
 	  custom-file (no-littering-expand-etc-file-name "custom.el")
 	  scheme-program-name "csi -:c"
 	  whitespace-style '(face trailing)
-          css-indent-offset 2)
+          css-indent-offset 2
+          gc-cons-threshold 100000000
+          read-process-output-max (* 1024 1024))
     (setq-default indent-tabs-mode nil))
 
   :hook
@@ -77,6 +76,8 @@
 
   :bind
   (("C-?" . undo-redo)))
+
+(use-package diminish)
 
 (use-package windmove
   :bind
@@ -148,6 +149,9 @@
   (setq projectile-project-search-path '("~/Projects" "~/quicklisp/local-projects")
 	projectile-switch-project-action 'magit-status)
 
+  :hook
+  (after-init-hook . projectile-global-mode)
+
   :bind
   (("s-p" . projectile-command-map)))
 
@@ -170,10 +174,6 @@
   :hook
   (prog-mode-hook . hungry-delete-mode))
 
-;; Visuals
-
-(use-package doom-themes)
-
 ;; Programming utilities
 
 (use-package company
@@ -183,16 +183,6 @@
 (use-package company-box
   :diminish
   :hook (company-mode-hook . company-box-mode))
-
-(use-package eglot
-  :commands eglot
-  :config
-  (progn
-    (add-to-list 'eglot-server-programs '(elixir-mode "elixir-ls"))
-    (add-to-list 'eglot-server-programs '(erlang-mode "erlang_ls"))
-    (add-to-list 'eglot-server-programs '((swift-mode :language-id "swift") "xcrun" "sourcekit-lsp")))
-  :bind
-  (("s-=" . eglot-format)))
 
 (use-package vterm
   :config
@@ -226,7 +216,7 @@
 
 (use-package magit
   :config
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1)
 
   :bind
   (("C-x g" . magit-status)))
@@ -235,17 +225,9 @@
   :init
   (ctrlf-mode))
 
-(use-package imenu-list
-  :config
-  (setq imenu-list-focus-after-activation t)
-  :bind
-  (("C-'" . imenu-list-smart-toggle)))
-
 ;; Languages
 
-(use-package elixir-mode
-  :hook
-  (elixir-mode-hook . eglot-ensure))
+(use-package elixir-mode)
 
 (use-package exunit
   :hook
@@ -261,9 +243,6 @@
 
 (use-package rust-mode)
 
-;; (use-package gleam-mode
-;;   :straight (:host github :repo "gleam-lang/gleam-mode"))
-
 (use-package tree-sitter-indent)
 
 (use-package lfe-mode)
@@ -271,10 +250,6 @@
 (use-package clojure-mode)
 
 (use-package cider)
-
-;; (use-package slime
-;;   :config
-;;   (setq inferior-lisp-program "sbcl"))
 
 (use-package sly
   :config
@@ -287,17 +262,9 @@
   (common-lisp-mode-hook . paredit-mode)
   (clojure-mode-hook . paredit-mode))
 
-(use-package zig-mode
-  :hook
-  (zig-mode-hook . eglot-ensure))
+(use-package zig-mode)
 
 ;; Other utilities
-
-(use-package ledger-mode
-  :config
-  (setq ledger-flymake-be-explicit t
-	ledger-flymake-be-pedantic t
-	ledger-report-use-strict t))
 
 (use-package markdown-mode
   :commands
@@ -323,8 +290,6 @@
   :straight
   (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
   :after org-roam
-  :hook
-  (after-init-hook . org-roam-ui-mode)
   :config
   (setq org-roam-ui-sync-theme t
         org-roam-ui-follow t
@@ -332,13 +297,6 @@
         org-roam-ui-open-on-start t))
 
 (use-package org-contrib)
-
-(use-package ghub
-  :config
-  (setq auth-sources '("~/.authinfo")))
-
-(use-package forge
-  :after magit)
 
 (use-package protobuf-mode)
 
@@ -348,21 +306,7 @@
 
 (use-package yasnippet-snippets)
 
-(use-package persp-mode)
-
-(use-package swift-mode
-  :hook
-  (swift-mode-hook . eglot-ensure))
-
-(use-package kaolin-themes)
-
-;; ((evil telephone-line-evil-tag-segment)
-;;  (accent telephone-line-vc-segment telephone-line-erc-modified-channels-segment telephone-line-process-segment)
-;;  (nil telephone-line-projectile-segment telephone-line-buffer-segment))
-
-;; ((nil telephone-line-flycheck-segment telephone-line-misc-info-segment)
-;;  (accent telephone-line-major-mode-segment)
-;;  (evil telephone-line-airline-position-segment))
+(use-package swift-mode)
 
 (use-package telephone-line
   :hook
@@ -376,3 +320,37 @@
           telephone-line-rhs
           '((nil . (telephone-line-misc-info-segment))
             (accent . (telephone-line-airline-position-segment))))))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  ((elixir-mode-hook . lsp-deferred)
+   (swift-mode-hook . lsp-deferred)
+   (zig-mode-hook . lsp-deferred)
+   (rust-mode-hook . lsp-deferred)
+   (lsp-mode-hook . lsp-enable-which-key-integration)
+   (lsp-mode-hook . lsp-ui-mode)))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-doc-show-with-cursor t)
+  :bind
+  (("C-'" . lsp-ui-imenu)))
+
+(use-package dap-mode)
+
+(require 'dap-elixir)
+(require 'dap-erlang)
+(require 'dap-gdb-lldb)
+(require 'dap-cpptools)
+
+(dap-register-debug-template "Rust::GDB Run Configuration"
+                             (list :type "gdb"
+                                   :request "launch"
+                                   :name "GDB::Run"
+                                   :gdbpath "rust-gdb"
+                                   :target nil
+                                   :cwd nil))
+(use-package wgsl-mode
+  :straight (:host github :repo "acowley/wgsl-mode"))
