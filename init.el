@@ -38,6 +38,7 @@
     (put 'downcase-region 'disabled nil)
     (put 'magit-clean 'disabled nil)
     (global-visual-line-mode)
+    (tooltip-mode -1)
     (set-face-attribute 'default nil :font "Berkeley Mono" :height 215)
     (set-face-attribute 'fixed-pitch nil :font "Berkeley Mono"))
 
@@ -65,8 +66,10 @@
 	  whitespace-style '(face trailing)
           css-indent-offset 2
           gc-cons-threshold 100000000
-          read-process-output-max (* 1024 1024))
-    (setq-default indent-tabs-mode nil))
+          read-process-output-max (* 1024 1024)
+          mac-right-option-modifier 'none)
+    (setq-default indent-tabs-mode nil
+                  indicate-empty-lines t))
 
   :hook
   (prog-mode-hook . subword-mode)
@@ -75,7 +78,8 @@
   (ns-system-appearance-change-functions . drgmr/apply-theme)
 
   :bind
-  (("C-?" . undo-redo)))
+  (("C-?" . undo-redo)
+   ("s-k" . kill-this-buffer)))
 
 (use-package diminish)
 
@@ -86,22 +90,32 @@
    ("s-<up>" . windmove-up)
    ("s-<down>" . windmove-down)))
 
+(use-package web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-sql-indent-offset 2
+        web-mode-enable-current-element-highlight t
+        web-mode-start-tag-regexp "<\\([[:alpha:]][[:alnum:].:_-\.]*\\|>\\)"
+        web-mode-tag-regexp "</?\\([[:alpha:]][[:alnum:].:_-\.]*\\)"))
+
 (use-package org
   :config
   (progn
     (setq org-catch-invisible-edits 'error
-	  org-agenda-files '("~/Projects/roam")
-	  org-pretty-entities t
-	  org-pretty-entities-include-sub-superscripts t
-	  org-use-sub-superscripts t
+          org-agenda-files '("~/Projects/roam")
+          org-pretty-entities t
+          org-pretty-entities-include-sub-superscripts t
+          org-use-sub-superscripts t
           org-return-follows-link t
           org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
     (add-to-list 'org-link-frame-setup '(file . find-file))
     (org-babel-do-load-languages
      'org-babel-load-languages
      (append org-babel-load-languages
-	     '((scheme . t)
-	       (dot . t)))))
+             '((scheme . t)
+               (dot . t)))))
   :hook
   (org-mode-hook . org-indent-mode))
 
@@ -141,14 +155,13 @@
   :hook
   (after-init-hook . which-key-mode))
 
-(use-package avy
-  :bind
-  (("C-\"" . avy-goto-char-2)))
-
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/Projects" "~/quicklisp/local-projects")
-	projectile-switch-project-action 'magit-status)
+  (progn
+    (setq projectile-project-search-path '("~/Projects" "~/quicklisp/local-projects")
+	  projectile-switch-project-action 'magit-status)
+    (add-to-list 'projectile-other-file-alist '("ex" "html.heex"))
+    (add-to-list 'projectile-other-file-alist '("html.heex" "ex")))
 
   :hook
   (after-init-hook . projectile-global-mode)
@@ -158,12 +171,15 @@
 
 (use-package docker
   :bind
+  (("C-x d" . docker)))
 
 (use-package kubernetes
   :commands (kubernetes-overview)
   :config
   (setq kubernetes-poll-frequency 3600
-        kubernetes-redraw-frequency 3600))
+        kubernetes-redraw-frequency 3600)
+  :bind
+  (("C-x k" . kubernetes-overview)))
 
 (use-package selectrum
   :hook
@@ -200,29 +216,30 @@
       "Switches to a terminal on the project root, creating one if needed."
       (interactive)
       (let ((possible-buffer-name (drgmr/vterm-name (projectile-project-name))))
-	(cond
-	 ((get-buffer possible-buffer-name)
-	  (switch-to-buffer possible-buffer-name))
-	 (t
-	  (drgmr/new-project-vterm)))))
+        (cond
+         ((get-buffer possible-buffer-name)
+          (switch-to-buffer possible-buffer-name))
+         (t
+          (drgmr/new-project-vterm)))))
 
     (defun drgmr/new-project-vterm (&rest args)
       "Creates a new term on the project's root."
       (interactive)
       (let* ((project-root (projectile-project-root))
-	     (project-name (projectile-project-name)))
-	(setenv "PROOT" project-root)
-	(vterm (generate-new-buffer-name (drgmr/vterm-name project-name)))
-	(vterm-send-string (concat "cd " project-root))
-	(vterm-send-return)
-	(vterm-clear))))
+             (project-name (projectile-project-name)))
+        (setenv "PROOT" project-root)
+        (vterm (generate-new-buffer-name (drgmr/vterm-name project-name)))
+        (vterm-send-string (concat "cd " project-root))
+        (vterm-send-return)
+        (vterm-clear))))
   :bind
   (("C-x t t" . drgmr/switch-to-project-vterm)
    ("C-x t n" . drgmr/new-project-vterm)))
 
 (use-package magit
   :config
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1)
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
+        magit-bury-buffer-function #'magit-restore-window-configuration)
 
   :bind
   (("C-x g" . magit-status)))
@@ -233,7 +250,11 @@
 
 ;; Languages
 
-(use-package elixir-mode)
+(use-package elixir-mode
+  :config
+  (yas-define-snippets 'elixir-mode
+                       '(("debug" "IO.inspect(binding(), label: \"#{__ENV__.module}.#{elem(__ENV__.function, 0)}/#{elem(__ENV__.function, 1)}\")")
+                         ("pry" "require IEx; IEx.pry()"))))
 
 (use-package exunit
   :hook
@@ -308,11 +329,17 @@
 
 (use-package yasnippet
   :hook
-  (prog-mode-hook . yas-minor-mode))
+  (prog-mode-hook . yas-minor-mode)
+  :config
+  (add-to-list 'company-backends 'company-yasnippet))
 
 (use-package yasnippet-snippets)
 
 (use-package swift-mode)
+
+(use-package envrc
+  :config
+  (envrc-global-mode))
 
 (use-package telephone-line
   :hook
@@ -329,6 +356,8 @@
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
+  :config
+  (setq lsp-file-watch-threshold nil)
   :hook
   ((elixir-mode-hook . lsp-deferred)
    (swift-mode-hook . lsp-deferred)
@@ -338,9 +367,10 @@
    (lsp-mode-hook . lsp-ui-mode)))
 
 (use-package lsp-ui
-  :commands lsp-ui-mode
+  :commands (lsp-ui-mode lsp-ui-imenu)
   :config
-  (setq lsp-ui-doc-show-with-cursor t)
+  (setq lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-show-with-mouse t)
   :bind
   (("C-'" . lsp-ui-imenu)))
 
