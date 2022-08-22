@@ -67,7 +67,8 @@
           css-indent-offset 2
           gc-cons-threshold 100000000
           read-process-output-max (* 1024 1024)
-          mac-right-option-modifier 'none)
+          mac-right-option-modifier 'none
+          native-comp-async-report-warnings-errors 'silent)
     (setq-default indent-tabs-mode nil
                   indicate-empty-lines t))
 
