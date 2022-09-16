@@ -364,6 +364,7 @@
    (swift-mode-hook . lsp-deferred)
    (zig-mode-hook . lsp-deferred)
    (rust-mode-hook . lsp-deferred)
+   (purescript-mode-hook . lsp-deferred)
    (lsp-mode-hook . lsp-enable-which-key-integration)
    (lsp-mode-hook . lsp-ui-mode)))
 
@@ -391,3 +392,19 @@
                                    :cwd nil))
 (use-package wgsl-mode
   :straight (:host github :repo "acowley/wgsl-mode"))
+
+(use-package purescript-mode)
+
+(use-package dhall-mode
+  :mode "\\.dhall\\'")
+
+(use-package haskell-mode)
+
+(use-package dante
+  :commands 'dante-mode
+  :init
+  (setq dante-repl-command-line '("ghci")
+        haskell-process-type 'ghci)
+  :hook
+  ((haskell-mode-hook . dante-mode)
+   (haskell-mode-hook . flycheck-mode)))
