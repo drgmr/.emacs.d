@@ -68,6 +68,7 @@
           gc-cons-threshold 100000000
           read-process-output-max (* 1024 1024)
           mac-right-option-modifier 'none
+          js-indent-level 2
           native-comp-async-report-warnings-errors 'silent)
     (setq-default indent-tabs-mode nil
                   indicate-empty-lines t))
@@ -365,6 +366,7 @@
    (zig-mode-hook . lsp-deferred)
    (rust-mode-hook . lsp-deferred)
    (purescript-mode-hook . lsp-deferred)
+   (erlang-mode-hook . lsp-deferred)
    (lsp-mode-hook . lsp-enable-which-key-integration)
    (lsp-mode-hook . lsp-ui-mode)))
 
@@ -393,7 +395,9 @@
 (use-package wgsl-mode
   :straight (:host github :repo "acowley/wgsl-mode"))
 
-(use-package purescript-mode)
+(use-package purescript-mode
+  :hook
+  (purescript-mode-hook . purescript-indentation-mode))
 
 (use-package dhall-mode
   :mode "\\.dhall\\'")
