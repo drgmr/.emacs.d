@@ -1,3 +1,4 @@
+(add-to-list 'default-frame-alist '(undecorated-round . t))
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (fringe-mode 0)
