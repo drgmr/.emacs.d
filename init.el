@@ -30,7 +30,7 @@
   (setq exec-path-from-shell-variables '("PATH"))
   (exec-path-from-shell-initialize))
 
-(use-package kaolin-themes)
+;; (use-package kaolin-themes)
 
 (use-package emacs
   :init
@@ -48,8 +48,8 @@
       "Load theme, taking current system APPEARANCE into consideration."
       (mapc #'disable-theme custom-enabled-themes)
       (pcase appearance
-	('light (load-theme 'kaolin-light t))
-	('dark (load-theme 'kaolin-aurora t))))
+	('light (load-theme 'modus-operandi-tinted t))
+	('dark (load-theme 'modus-vivendi-tinted t))))
     (defun drgmr/add-list-to-list (dst src)
       "Similar to `add-to-list', but accepts a list as 2nd argument"
       (set dst (append (eval dst) src)))
